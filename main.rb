@@ -1,5 +1,5 @@
 path = File.expand_path(" . ")
-
+require 'gtk3'
 require "#{path}\\read_from_excel_file"
 require "#{path}\\work_with_array"
 require "#{path}\\record_to_file"
@@ -8,7 +8,8 @@ require "#{path}\\plot_cubic_parabola"
 
 adv = []
 puts 'Введите путь и имя файла (Пример: C:\\Excel.xls)'
-file_name_1 = gets.chomp.capitalize
+#file_name_1 = gets.chomp.capitalize
+puts file_name_1 = 'C:\\Excel.xls'
 file = ReadFromExcelFile.new(file_name_1).open_sheet.each{|row| adv<<row}
 
 array = WorkWithArray.new(adv)
@@ -18,7 +19,8 @@ sort_data = array.sort_array!
 average_data = array.average
 
 puts 'Введите путь и имя файла (Пример: C:\\Average data.xls)'
-file_name_2 = gets.chomp.capitalize
+#file_name_2 = gets.chomp.capitalize
+puts file_name_2 = 'C:\\Average data.xls'
 
 write_file = RecordToFile.new
 #record to file. передать сюда объект ReadFromExcelFile
