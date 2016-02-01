@@ -54,5 +54,5 @@ cubic_parabola_equation = CubicParabola.new(row_data_with_id["Calibration ID"],
 # p cubic_parabola_equation.coefficient_b
 # p cubic_parabola_equation.coefficient_c
 # p cubic_parabola_equation.coefficient_d
-plot = Plot.new(cubic_parabola_equation)
-plot.ff																				
+plot = PlotCP.new(cubic_parabola_equation)
+plot.ploting_equation																			

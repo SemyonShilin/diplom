@@ -4,7 +4,7 @@ require "#{path}\\mnk_cubic_parabola"
 require "gnuplot"
 
 
-class PlotCP
+class Plot
 
 	def initialize(obn)
 		@ob = obn
@@ -12,7 +12,7 @@ class PlotCP
 	
 	attr_accessor :ob
 
-	def ploting_equation					
+	def ff					
 		Gnuplot.open do |gp|
 			Gnuplot::Plot.new( gp ) do |plot|
 			
