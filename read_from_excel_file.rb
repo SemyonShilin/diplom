@@ -4,8 +4,10 @@ class ReadFromExcelFile < Spreadsheet::Excel::Worksheet
 	
 	def initialize(path)
 		@file_path = path
+		#@array = []
 	end
 	
+	#attr_accessor :array
 	attr_reader :file_path
 	
 	def open_sheet
