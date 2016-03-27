@@ -24,7 +24,7 @@ class WorkWithArray
 		#array_from_sheet.each{|elem| print "#{elem}\n"}
 	end
 	
-	def average
+	def average!
 		#усреднение
 		y, vec = 1, Vector[*array_from_sheet.at(0)]
 		(array_from_sheet.size-1).times do |index|

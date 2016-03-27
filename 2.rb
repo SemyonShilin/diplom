@@ -13,20 +13,22 @@ class RubyApp < Gtk::Window
 	def initialize
 		super
 
-		@arr = Array.new
+		@array = Array.new
 		@hash_with_data = Hash.new
 
 		init_ui
 	end
+
+	attr_accessor :array, :hash_with_data
 
 	def init_ui
 
 		window = Gtk::Window.new("Excel")
 		table = Gtk::Table.new 2, 2, true
 
-		open = Gtk::Button.new :label => "Read"
-		plot = Gtk::Button.new :label => "Plotting"
-		save = Gtk::Button.new :label => "Save file"
+		open = Gtk::Button.new :label => "1.Read"
+		plot = Gtk::Button.new :label => "2.Plotting"
+		save = Gtk::Button.new :label => "3.Save file"
 		quit = Gtk::Button.new :label => "Quit"
 
 		open.signal_connect "clicked" do
@@ -71,7 +73,13 @@ class RubyApp < Gtk::Window
                                     							[Gtk::Stock::CANCEL, Gtk::ResponseType::CANCEL]]
 
 		if dialog.run == :accept
-			ReadFromExcelFile.new(dialog.filename).open_sheet.each{|row| @arr<<row}
+			ReadFromExcelFile.new(dialog.filename).open_sheet.each{|row| @array<<row}
+
+			solid = WorkWithArray.new(@array)
+			hash_with_data[:head_data] = solid.header
+			solid.sort_array!
+			solid.average!
+			hash_with_data[:row_data_with_id] = solid.array_to_hash
 		end
 
 		dialog.destroy
@@ -80,7 +88,7 @@ class RubyApp < Gtk::Window
 	def on_plot
     window = Gtk::Window.new("Plotting")
     window.border_width = 0
-    #window.set_default_size 300, 100
+    window.set_default_size 200, 300
 		window.set_window_position :center
 
 		box1 = Gtk::Box.new(:vertical, 0)
@@ -95,18 +103,57 @@ class RubyApp < Gtk::Window
 		box2.pack_start(scrolled_win, expand: true, fill: true, padding: 0)
 
 		model = Gtk::ListStore.new(String)
-		column = Gtk::TreeViewColumn.new("Gene",
+		column = Gtk::TreeViewColumn.new("Select Gene",
 		                                 Gtk::CellRendererText.new, {:text => 0})
 		treeview = Gtk::TreeView.new(model)
 		treeview.append_column(column)
 		treeview.selection.set_mode(:single)
 		scrolled_win.add_with_viewport(treeview)
 
-		data.each do |v|
-		  iter = model.append
-		  iter[0] =  v
+		hash_with_data[:head_data].last.each do |v|
+			if v[/CG/]
+				iter = model.append
+		  	iter[0] =  v
+			end
 		end
 
+		button_hyp = Gtk::Button.new :label => "Plot hyperbola"
+		button_hyp.can_focus=true
+
+		button_cub = Gtk::Button.new :label => "Plot cubic parabola"
+		button_cub.can_focus=true
+
+		button_hyp.signal_connect("clicked") do
+			iter = treeview.selection.selected
+			gene_id = model.get_value(iter, 0)
+
+			plot_hyp(gene_id)
+		end
+
+		button_cub.signal_connect("clicked") do
+			iter = treeview.selection.selected
+			gene_id = model.get_value(iter, 0)
+
+			plot_cub(gene_id)
+		end
+
+		box2.pack_start(button_hyp, expand: false, fill: true, padding: 0)
+		box2.pack_start(button_cub, expand: false, fill: true, padding: 0)
+
+		separator = Gtk::Separator.new(:horizontal)
+
+		box1.pack_start(separator, expand: false, fill: true, padding: 0)
+		separator.show
+
+		button = Gtk::Button.new :label => "Back"
+		button.signal_connect("clicked") do
+		  window.destroy
+		end
+		box2.pack_start(button, expand: false, fill: true, padding: 0)
+		button.can_default=true
+		button.grab_default
+
+		window.can_focus = true
     window.show_all
 	end
 
@@ -118,20 +165,26 @@ class RubyApp < Gtk::Window
                                     							 [Gtk::Stock::CANCEL, Gtk::ResponseType::CANCEL]]
 
 		if save.run == :accept
+			#RecordToFile.new(save.filename, head_data, average_data).book_write
 		  puts "filename = #{save.filename}"
 		end
 		save.destroy
 	end
 
-	def work(arr)
-		array = WorkWithArray.new(arr)
-		@hash_with_data[head_data] = array.header
-		#head_data = array.header
-		array.sort_array!
-		@hash_with_data[average_data] = array.average
-		#average_data = array.average
-		@hash_with_data[row_data_with_id] = array.array_to_hash
-		row_data_with_id = array.array_to_hash
+	def plot_hyp(gene)
+		hyperbola_equation = Hyperbola.new(hash_with_data[:row_data_with_id][hash_with_data[:head_data].last.first],
+																			hash_with_data[:row_data_with_id][gene])
+
+		plot = PlotHyp.new(hyperbola_equation, gene)
+		plot.ploting_equation
+	end
+
+	def plot_cub(gene)
+		cubic_parabola_equation = CubicParabola.new(hash_with_data[:row_data_with_id][hash_with_data[:head_data].last.first],
+																								hash_with_data[:row_data_with_id][gene])
+
+		plot = PlotCP.new(cubic_parabola_equation, gene)
+		plot.ploting_equation
 	end
 
 end

@@ -18,7 +18,7 @@ array = WorkWithArray.new(adv)
 
 head_data = array.header
 array.sort_array!
-average_data = array.average
+array.average!
 
 puts 'Введите путь и имя файла (Пример: C:\\Average data.xls)'
 #file_name_2 = gets.chomp.capitalize

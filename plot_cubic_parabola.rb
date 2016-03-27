@@ -6,20 +6,21 @@ require "gnuplot"
 
 class PlotCP
 
-	def initialize(obn)
+	def initialize(obn, gene_id)
 		@ob = obn
+		@gn = gene_id
 	end
-	
-	attr_accessor :ob
 
-	def ploting_equation					
+	attr_reader :ob, :gn
+
+	def ploting_equation
 		Gnuplot.open do |gp|
 			Gnuplot::Plot.new( gp ) do |plot|
-			
+
 				plot.title  "Cubic Parabola"
-				plot.ylabel "gene"
+				plot.ylabel "#{gn}"
 				plot.xlabel "Calibration ID"
-				
+
 				x = ob.x.collect { |v| v.to_f }
 				y = x.collect do
 					|v| ob.coefficient_a * v**3 + ob.coefficient_b * v**2 + ob.coefficient_c * v + ob.coefficient_d
@@ -28,10 +29,10 @@ class PlotCP
 				plot.data = [
 											Gnuplot::DataSet.new( [x, ob.y] ) { |ds|
 												ds.with = "points"
-												ds.title = "data"
+												ds.title = "Data"
 												ds.linewidth = 2
 											},
-										
+
 											Gnuplot::DataSet.new( [x, y] ) { |ds|
 												ds.with = "linespoints"
 												ds.title = "Approximation data"
