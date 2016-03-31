@@ -174,7 +174,7 @@ class RubyApp < Gtk::Window
 	def plot_hyp(gene)
 		hyperbola_equation = Hyperbola.new(hash_with_data[:row_data_with_id][hash_with_data[:head_data].last.first],
 																			hash_with_data[:row_data_with_id][gene])
-
+		p hyperbola_equation.deskr
 		plot = PlotHyp.new(hyperbola_equation, gene)
 		plot.ploting_equation
 	end

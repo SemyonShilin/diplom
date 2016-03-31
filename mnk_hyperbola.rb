@@ -10,27 +10,65 @@ class Hyperbola
 	def initialize (id, gene)
 		@full_x = id
 		@full_y = gene
-		@x, @y = id[1..-2], gene[1..-2]
+		@x, @y = id, gene #id[1..-2], gene[1..-2]
 	end
 
 	attr_reader :x, :y, :full_x, :full_y
 
+	# def coefficient_a
+		# (full_y.last * full_x.last + (full_y.last - full_y.first) * coefficient_d)/full_x.last
+	# end
+
+	# def coefficient_b
+		# full_y.first * coefficient_d
+	# end
+
+	# def coefficient_d
+		 # ((full_x.last**2) * (full_y.last**2) * sum(y_in_divisible_by_x(2)))/
+			 # (((full_y.last - full_y.first) * sum(y_in_divisible_by_x(1)) + full_x.last * full_y.first) *
+				# ((full_y.last + full_x.last * full_y.last) * sum(y_in_divisible_by_x(2)) + full_x.last * sum(y_in_divisible_by_x(2, 1)) +
+					 # (full_x.last * (full_y.first - full_y.last) - full_y.first) * sum(y_in_divisible_by_x(1)) + full_x.last * sum(y_in_divisible_by_x(1, 1))
+				# )
+			# )
+  # end
+
+  def a
+  	(x.last*y.first - x.last*y.first*sum(y_in_degree_n(1)) - x.last*y.last)*sum(x_in_degree_n(1)) +
+  	(x.last**2)*y.first*sum(y_in_degree_n(1)) + x.last*y.first*sum(x_in_degree_n_on_y(1))
+  end
+
+  def b
+  	sum(x_in_degree_n)*(x.last*y.last - x.last*y.first)*(sum(y_in_degree_n(1)) - 1) +
+  		2*(x.last**2) * y.first * sum(x_in_degree_n_on_y) - (x.last**2) * y.first * sum(x_in_degree_n(1)) +
+  		(x.last**2)*y.first*x.size - (y.last**2 - y.first*y.last + y.last**2)*sum(x_in_degree_n(3)) +
+  		(y.first*y.last - 3*x.last*y.first*y.last + x.last*y.last**2 + 2*x.last*y.first**2)*sum(x_in_degree_n(2)) -
+  		((x.last**2)*y.first**2 - (x.last**2)*y.first*y.last)*sum(x_in_degree_n(1))
+  end
+
+  def c
+  	x.last*(y.last-y.first)*sum(x_in_degree_n_on_y(3)) + (x.last**2)*y.first*sum(x_in_degree_n_on_y(2)) +
+  	(x.last**2)*y.first*x.size*sum(x_in_degree_n(1)) - x.last*y.first*sum(x_in_degree_n)
+  end
+
+	def deskr
+		(b**2) -4*a*c
+	end
+
+	#def koren1
+		#(-b + Math.sqrt(deskr))/(2*a)
+	#end
+
+	def coefficient_d
+		(-b - Math.sqrt(deskr))/(2*a)
+	end
+
 	def coefficient_a
-		(full_y.last * full_x.last + (full_y.last - full_y.first) * coefficient_d)/full_x.last
+		(y.last*(x.last + coefficient_d) - y.first*coefficient_d)/x.last
 	end
 
 	def coefficient_b
-		full_y.first * coefficient_d
+		y.first * coefficient_d
 	end
-
-	def coefficient_d
-		 (full_x.last**2 * full_y.last**2 * sum(y_in_divisible_by_x(2)))/
-			 (((full_y.last - full_y.first) * sum(y_in_divisible_by_x(1)) + full_x.last * full_y.first) *
-				((full_y.last + full_x.last * full_y.last) * sum(y_in_divisible_by_x(2)) + full_x.last * sum(y_in_divisible_by_x(2, 1)) +
-					 (full_x.last * (full_y.first - full_y.last) - full_y.first) * sum(y_in_divisible_by_x(1)) + full_x.last * sum(y_in_divisible_by_x(1, 1))
-				)
-			)
-  end
 
 	# def general_determinant
 		# Matrix[[x.size, sum(y_in_divisible_by_x(1, 1)), sum(y_in_divisible_by_x(1))],
