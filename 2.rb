@@ -1,29 +1,24 @@
-path = File.expand_path(" . ")
 require 'gtk3'
-require "#{path}\\read_from_excel_file"
-require "#{path}\\work_with_array"
-require "#{path}\\record_to_file"
-require "#{path}\\mnk_cubic_parabola"
-require "#{path}\\mnk_hyperbola"
-require "#{path}\\plot_cubic_parabola"
-require "#{path}\\plot_hyperbola"
+Dir[File.dirname(__FILE__) + '/oop/*.rb'].each {|file| require "#{file}"}
+
 
 class RubyApp < Gtk::Window
+
+  attr_accessor :hash_with_data, :array, :array_cub, :array_hyp
 
 	def initialize
 		super
 
 		@array = Array.new
 		@hash_with_data = Hash.new
+    @array_hyp = Array.new
+    @array_cub = Array.new
 
 		init_ui
 	end
 
-	attr_accessor :array, :hash_with_data
-
 	def init_ui
 
-		window = Gtk::Window.new("Excel")
 		table = Gtk::Table.new 2, 2, true
 
 		open = Gtk::Button.new :label => "1.Read"
@@ -52,16 +47,18 @@ class RubyApp < Gtk::Window
 		table.attach save, 0, 1, 1, 2
 		table.attach quit, 1, 2, 1, 2
 
-		window.add(table)
+    add table
+
+    set_title "Excel"
 
 		signal_connect "destroy" do
 				Gtk.main_quit
 		end
 
-		window.set_default_size 300, 100
-		window.set_window_position :center
+		set_default_size 300, 100
+		set_window_position :center
 
-		window.show_all
+		show_all
 
 	end
 
@@ -104,7 +101,7 @@ class RubyApp < Gtk::Window
 
 		model = Gtk::ListStore.new(String)
 		column = Gtk::TreeViewColumn.new("Select Gene",
-		                                 Gtk::CellRendererText.new, {:text => 0})
+		                                 Gtk::CellRendererText.new, {text: 0})
 		treeview = Gtk::TreeView.new(model)
 		treeview.append_column(column)
 		treeview.selection.set_mode(:single)
@@ -117,10 +114,10 @@ class RubyApp < Gtk::Window
 			end
 		end
 
-		button_hyp = Gtk::Button.new :label => "Plot hyperbola"
+		button_hyp = Gtk::Button.new label: "Plot hyperbola"
 		button_hyp.can_focus=true
 
-		button_cub = Gtk::Button.new :label => "Plot cubic parabola"
+		button_cub = Gtk::Button.new label: "Plot cubic parabola"
 		button_cub.can_focus=true
 
 		button_hyp.signal_connect("clicked") do
@@ -158,14 +155,15 @@ class RubyApp < Gtk::Window
 	end
 
 	def on_save
-		save = Gtk::FileChooserDialog.new :title => "Save as",
-                                      :parent => parent_window,
-                                      :action => :save,
-                                      :buttons => [[Gtk::Stock::SAVE_AS, Gtk::ResponseType::ACCEPT],
+		save = Gtk::FileChooserDialog.new title: "Save as",
+                                      parent: parent_window,
+                                      action: :save,
+                                      buttons: [[Gtk::Stock::SAVE_AS, Gtk::ResponseType::ACCEPT],
                                     							 [Gtk::Stock::CANCEL, Gtk::ResponseType::CANCEL]]
 
 		if save.run == :accept
-			#RecordToFile.new(save.filename, head_data, average_data).book_write
+			RecordToFile.new(save.filename, hash_with_data[:head_data].first,
+                      array_hyp, array_cub).book_write
 		  puts "filename = #{save.filename}"
 		end
 		save.destroy
@@ -173,10 +171,11 @@ class RubyApp < Gtk::Window
 
 	def plot_hyp(gene)
 		hyperbola_equation = Hyperbola.new(hash_with_data[:row_data_with_id][hash_with_data[:head_data].last.first],
-																			hash_with_data[:row_data_with_id][gene])
-		p hyperbola_equation.deskr
+																			 hash_with_data[:row_data_with_id][gene])
+
 		plot = PlotHyp.new(hyperbola_equation, gene)
 		plot.ploting_equation
+    @array_hyp << [gene] + plot.y
 	end
 
 	def plot_cub(gene)
@@ -185,6 +184,7 @@ class RubyApp < Gtk::Window
 
 		plot = PlotCP.new(cubic_parabola_equation, gene)
 		plot.ploting_equation
+    @array_cub << [gene] + plot.y
 	end
 
 end

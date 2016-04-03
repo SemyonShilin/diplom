@@ -1,0 +1,51 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    atk (3.0.7)
+      glib2 (= 3.0.7)
+    cairo (1.14.3)
+      pkg-config (>= 1.1.5)
+    cairo-gobject (3.0.7)
+      cairo
+      glib2 (= 3.0.7)
+    gdk3 (3.0.7)
+      cairo-gobject (= 3.0.7)
+      gdk_pixbuf2 (= 3.0.7)
+      gobject-introspection (= 3.0.7)
+      pango (= 3.0.7)
+    gdk_pixbuf2 (3.0.7)
+      glib2 (= 3.0.7)
+    gio2 (3.0.7)
+      glib2 (= 3.0.7)
+      gobject-introspection (= 3.0.7)
+    glib2 (3.0.7)
+      pkg-config
+    gnuplot (2.6.2)
+    gobject-introspection (3.0.7)
+      glib2 (= 3.0.7)
+    gtk3 (3.0.7)
+      atk (= 3.0.7)
+      gdk3 (= 3.0.7)
+      gdk_pixbuf2 (= 3.0.7)
+      gio2 (= 3.0.7)
+      glib2 (= 3.0.7)
+      gobject-introspection (= 3.0.7)
+      pango (= 3.0.7)
+    pango (3.0.7)
+      cairo (>= 1.14.0)
+      glib2 (= 3.0.7)
+    pkg-config (1.1.7)
+    ruby-ole (1.2.12)
+    spreadsheet (1.1.1)
+      ruby-ole (>= 1.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  gnuplot (= 2.6.2)
+  gtk3 (= 3.0.7)
+  spreadsheet (= 1.1.1)
+
+BUNDLED WITH
+   1.12.0.rc
