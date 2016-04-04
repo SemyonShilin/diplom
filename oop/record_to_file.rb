@@ -24,6 +24,13 @@ class RecordToFile
     file_write(file_name) do |new_book|
 
 			sheet = new_book.worksheet(0)
+			#@header_arr.pop
+			#(header_arr.size).times do |r|
+			#	(header_arr.size).times do |colum|
+			#		sheet[r, colum] = header_arr[colum][r]
+			#		sheet.row(r).set_format(colum, format_col(:red))
+			#	end
+			#end
 
 			(data_cub.first.size).times do |r|
 				(data_cub.size).times do |colum|

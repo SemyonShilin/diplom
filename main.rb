@@ -9,10 +9,10 @@ class RubyApp < Gtk::Window
   def initialize
     super
 
-    @array = Array.new
-    @hash_with_data = Hash.new
-    @array_hyp = Array.new
-    @array_cub = Array.new
+    @array = []
+    @hash_with_data = {}
+    @array_hyp = []
+    @array_cub = []
 
     init_ui
   end
@@ -40,7 +40,7 @@ class RubyApp < Gtk::Window
     end
 
     quit.signal_connect 'clicked' do
-      Gtk.main_quit
+      on_quit
     end
 
     table.attach open, 0, 1, 0, 1
@@ -64,13 +64,19 @@ class RubyApp < Gtk::Window
   end
 
   def on_open
-    dialog = Gtk::FileChooserDialog.new :title => 'Read file',
-                                     :parent => parent_window,
-                                     :action => :open,
-                                     :buttons => [[Gtk::Stock::OPEN, Gtk::ResponseType::ACCEPT],
+    dialog = Gtk::FileChooserDialog.new title: 'Read file',
+                                        parent: parent_window,
+                                        action: :open,
+                                        buttons: [[Gtk::Stock::OPEN, Gtk::ResponseType::ACCEPT],
                                                   [Gtk::Stock::CANCEL, Gtk::ResponseType::CANCEL]]
 
     if dialog.run == :accept
+      condition(dialog, 'Error associated with opening a file: wrong format file')
+#      until dialog.filename[/.xls[x]?$/] =~ /.xls[x]?$/
+#        on_error 'Error associated with opening a file: wrong format file'
+#        dialog.run
+#      end
+      begin
       ReadFromExcelFile.new(dialog.filename).open_sheet.each{|row| @array<<row}
 
       solid = WorkWithArray.new(array)
@@ -78,6 +84,9 @@ class RubyApp < Gtk::Window
       solid.sort_array!
       solid.average!
       hash_with_data[:row_data_with_id] = solid.array_to_hash
+      rescue
+        on_error 'You have already opened a file'
+      end
     end
 
     dialog.destroy
@@ -163,11 +172,41 @@ class RubyApp < Gtk::Window
                                                    [Gtk::Stock::CANCEL, Gtk::ResponseType::CANCEL]]
 
     if save.run == :accept
+      condition(save, 'Error associated with saving a file')
+#      until save.filename[/.xls[x]?$/] =~ /.xls[x]?$/
+#        on_error 'Error associated with saving a file '
+#        save.run
+#      end
       RecordToFile.new(save.filename, hash_with_data[:head_data].first,
                       array_hyp, array_cub).book_write
-      puts "filename = #{save.filename}"
+      @array.clear
+      @array_cub.clear
+      @array_hyp.clear
     end
     save.destroy
+  end
+
+  def on_quit
+    quite = Gtk::MessageDialog.new parent: parent_window,
+                                flags: :destroy_with_parent, type: :question,
+                                buttons_type: :close, message: 'Are you sure to quit?'
+    quite.run
+    Gtk.main_quit
+  end
+
+  def on_error(mess)
+    md = Gtk::MessageDialog.new parent: self,
+                                flags: :modal, type: :error,
+                                buttons_type: :ok, message: "#{mess}"
+    md.run
+    md.destroy
+  end
+
+  def condition (obj, mess)
+    until obj.filename[/.xls[x]?$/] =~ /.xls[x]?$/
+      on_error "#{mess}"
+      obj.run
+    end
   end
 
   def plot_hyp(gene)
