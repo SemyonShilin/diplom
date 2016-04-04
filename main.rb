@@ -1,5 +1,5 @@
 require 'gtk3'
-Dir[File.dirname(__FILE__) + '/oop/*.rb'].each {|file| require "#{file}"}
+Dir[File.dirname(__FILE__) + '/diploma/*.rb'].each {|file| require "#{file}"}
 
 
 class RubyApp < Gtk::Window
