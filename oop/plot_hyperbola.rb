@@ -15,7 +15,7 @@ class PlotHyp
 		@x, @y = [], []
 	end
 
-	def ploting_equation
+	def plotting_equation
 		Gnuplot.open do |gp|
 			Gnuplot::Plot.new( gp ) do |plot|
 
