@@ -1,5 +1,5 @@
 #$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
-path = File.expand_path("../../diploma", __FILE__)
+path = File.expand_path("../../lib", __FILE__)
 require "#{path}/mnk_hyperbola"
 require "gnuplot"
 

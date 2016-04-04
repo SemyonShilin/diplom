@@ -1,6 +1,6 @@
 require 'mathn'
 require 'matrix'
-path = File.expand_path("../../diploma", __FILE__)
+path = File.expand_path("../../lib", __FILE__)
 require "#{path}/methods"
 
 class Hyperbola
