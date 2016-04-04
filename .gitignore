@@ -1,6 +1,6 @@
 /.bundle
 
-./.idea/*
+.idea
 
 /*.xls
 /*.xlsx
