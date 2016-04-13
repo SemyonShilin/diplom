@@ -1,5 +1,6 @@
 require 'gtk3'
-Dir[File.dirname(__FILE__) + '/lib/*.rb'].each {|file| require "#{file}"}
+sep = File::SEPARATOR
+Dir[File.dirname(__FILE__) + "#{sep}" + "lib" + "#{sep}" + "*.rb"].each {|file| require "#{file}"}
 
 
 class RubyApp < Gtk::Window
@@ -71,19 +72,17 @@ class RubyApp < Gtk::Window
                                                   [Gtk::Stock::CANCEL, Gtk::ResponseType::CANCEL]]
 
     if dialog.run == :accept
-      condition(dialog, 'Error associated with opening a file: wrong format file')
-#      until dialog.filename[/.xls[x]?$/] =~ /.xls[x]?$/
-#        on_error 'Error associated with opening a file: wrong format file'
-#        dialog.run
-#      end
-      begin
-      ReadFromExcelFile.new(dialog.filename).open_sheet.each{|row| @array<<row}
 
-      solid = WorkWithArray.new(array)
-      hash_with_data[:head_data] = solid.header
-      solid.sort_array!
-      solid.average!
-      hash_with_data[:row_data_with_id] = solid.array_to_hash
+      dialog.run == (:cancel || :destroy) ? dialog.destroy : condition(dialog, 'Error associated with opening a file: wrong format file')
+
+      begin
+        ReadFromExcelFile.new(dialog.filename).open_sheet.each{|row| @array<<row}
+
+        solid = WorkWithArray.new(array)
+        hash_with_data[:head_data] = solid.header
+        solid.sort_array!
+        solid.average!
+        hash_with_data[:row_data_with_id] = solid.array_to_hash
       rescue
         on_error 'You have already opened a file'
       end
@@ -172,11 +171,9 @@ class RubyApp < Gtk::Window
                                                    [Gtk::Stock::CANCEL, Gtk::ResponseType::CANCEL]]
 
     if save.run == :accept
-      condition(save, 'Error associated with saving a file')
-#      until save.filename[/.xls[x]?$/] =~ /.xls[x]?$/
-#        on_error 'Error associated with saving a file '
-#        save.run
-#      end
+
+      save.run == (:cancel || :destroy) ? save.destroy : condition(save, 'Error associated with saving a file')
+
       RecordToFile.new(save.filename, hash_with_data[:head_data].first,
                       array_hyp, array_cub).book_write
       @array.clear
@@ -197,14 +194,14 @@ class RubyApp < Gtk::Window
   def on_error(mess)
     md = Gtk::MessageDialog.new parent: self,
                                 flags: :modal, type: :error,
-                                buttons_type: :ok, message: "#{mess}"
+                                buttons_type: :ok, message: mess
     md.run
     md.destroy
   end
 
   def condition (obj, mess)
     until obj.filename[/.xls[x]?$/] =~ /.xls[x]?$/
-      on_error "#{mess}"
+      on_error mess
       obj.run
     end
   end
@@ -216,6 +213,7 @@ class RubyApp < Gtk::Window
     plot = PlotHyp.new(hyperbola_equation, gene)
     plot.plotting_equation
     @array_hyp << [gene] + plot.y
+    @array_hyp.uniq!
   end
 
   def plot_cub(gene)
@@ -225,10 +223,10 @@ class RubyApp < Gtk::Window
     plot = PlotCP.new(cubic_parabola_equation, gene)
     plot.plotting_equation
     @array_cub << [gene] + plot.y
+    @array_cub.uniq!
   end
 
 end
 
-
-window = RubyApp.new
+RubyApp.new
 Gtk.main

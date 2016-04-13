@@ -1,7 +1,5 @@
-#$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
-path = File.expand_path("../../lib", __FILE__)
-require "#{path}/mnk_cubic_parabola"
 require "gnuplot"
+require_relative 'mnk_cubic_parabola'
 
 class PlotCP
 

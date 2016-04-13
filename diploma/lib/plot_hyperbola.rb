@@ -1,8 +1,6 @@
-#$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
-path = File.expand_path("../../lib", __FILE__)
-require "#{path}/mnk_hyperbola"
-require "gnuplot"
 
+require "gnuplot"
+require_relative 'mnk_hyperbola'
 
 class PlotHyp
 

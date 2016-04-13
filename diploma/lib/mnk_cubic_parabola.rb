@@ -1,7 +1,6 @@
 require 'mathn'
 require 'matrix'
-path = File.expand_path("../../lib", __FILE__)
-require "#{path}/methods"
+require_relative 'methods'
 
 class CubicParabola
 
