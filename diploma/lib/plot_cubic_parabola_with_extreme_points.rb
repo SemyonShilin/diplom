@@ -2,7 +2,7 @@ require 'gnuplot'
 require_relative 'mnk_cubic_parabola'
 require_relative 'sum_approximation_module'
 
-class PlotCP
+class PlotCPWithExtremes
 
   include SumApproximation
 
@@ -19,7 +19,7 @@ class PlotCP
     Gnuplot.open do |gp|
       Gnuplot::Plot.new( gp ) do |plot|
 
-        plot.title  "Cubic parabola"
+        plot.title  "Cubic parabola with extreme points"
         plot.ylabel "#{gn}"
         plot.xlabel "Calibration ID"
 
@@ -29,19 +29,19 @@ class PlotCP
         end
 
         plot.data = [
-                    Gnuplot::DataSet.new( [x, ob.y] ) do |ds|
-                      ds.with = "points"
-                      ds.title = "Data"
-                      ds.linewidth = 2
-                    end,
+            Gnuplot::DataSet.new( [x, ob.y] ) do |ds|
+              ds.with = "points"
+              ds.title = "Data"
+              ds.linewidth = 2
+            end,
 
-                    Gnuplot::DataSet.new( [x, y] ) do |ds|
-                      ds.with = "linespoints"
-                      ds.title = "Approximation data"
-                    end,
+            Gnuplot::DataSet.new( [x, y] ) do |ds|
+              ds.with = "linespoints"
+              ds.title = "Approximation data"
+            end,
 
-                    mistake_written_in_title
-                    ]
+            mistake_written_in_title
+        ]
       end
     end
   end

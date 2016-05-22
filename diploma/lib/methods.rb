@@ -30,4 +30,12 @@ module Methods
 		temp
 	end
 
+	def mult(array1, array2)
+		temp = []
+		(array1.size).times do |index|
+			temp << array1[index]*array2[index]
+		end
+		temp
+	end
+
 end

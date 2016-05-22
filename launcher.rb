@@ -1,6 +1,6 @@
 require 'gtk3'
 sep = File::SEPARATOR
-Dir[File.dirname(__FILE__) + "#{sep}" + "lib" + "#{sep}" + "*.rb"].each {|file| require "#{file}"}
+Dir[File.dirname(__FILE__)+ "#{sep}" + "diploma" + "#{sep}" + "lib" + "#{sep}" + "*.rb"].each {|file| require "#{file}"}
 
 
 class RubyApp < Gtk::Window
@@ -55,7 +55,7 @@ class RubyApp < Gtk::Window
     set_title 'Excel'
 
     signal_connect 'destroy' do
-        Gtk.main_quit
+      Gtk.main_quit
     end
 
     set_default_size 300, 100
@@ -183,7 +183,7 @@ class RubyApp < Gtk::Window
                                       parent: parent_window,
                                       action: :save,
                                       buttons: [[Gtk::Stock::SAVE_AS, Gtk::ResponseType::ACCEPT],
-                                                   [Gtk::Stock::CANCEL, Gtk::ResponseType::CANCEL]]
+                                                [Gtk::Stock::CANCEL, Gtk::ResponseType::CANCEL]]
 
     if save.run == :accept
 
@@ -191,7 +191,7 @@ class RubyApp < Gtk::Window
       condition(save, 'Error associated with saving a file')
 
       RecordToFile.new(save.filename, hash_with_data[:head_data].first,
-                      array_hyp, array_cub, array_cub_with_extremes).book_write
+                       array_hyp, array_cub, array_cub_with_extremes).book_write
       @array.clear
       @array_cub.clear
       @array_hyp.clear
@@ -202,8 +202,8 @@ class RubyApp < Gtk::Window
 
   def on_quit
     quite = Gtk::MessageDialog.new parent: parent_window,
-                                flags: :destroy_with_parent, type: :question,
-                                buttons_type: :close, message: 'Are you sure to quit?'
+                                   flags: :destroy_with_parent, type: :question,
+                                   buttons_type: :close, message: 'Are you sure to quit?'
     quite.run
     Gtk.main_quit
   end
@@ -247,7 +247,7 @@ class RubyApp < Gtk::Window
 
   def plot_cub_with_extremes(gene)
     parabola_extremes_equation = CubicParabolaWithExtremes.new(hash_with_data[:row_data_with_id][hash_with_data[:head_data].last.first],
-                                                                          hash_with_data[:row_data_with_id][gene])
+                                                               hash_with_data[:row_data_with_id][gene])
     plot = PlotCPWithExtremes.new(parabola_extremes_equation, gene)
     plot.plotting_equation
     @array_cub_with_extremes << [gene] + plot.y

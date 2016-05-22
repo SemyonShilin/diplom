@@ -1,8 +1,10 @@
-
-require "gnuplot"
+require 'gnuplot'
 require_relative 'mnk_hyperbola'
+require_relative 'sum_approximation_module'
 
 class PlotHyp
+
+	include SumApproximation
 
 	attr_accessor :x, :y
 	attr_reader :ob, :gn
@@ -36,7 +38,9 @@ class PlotHyp
 										Gnuplot::DataSet.new( [x, y] ) do |ds|
 											ds.with = "linespoints"
 											ds.title = "Approximation data"
-										end
+										end,
+
+										mistake_written_in_title
 										]
 			end
 		end

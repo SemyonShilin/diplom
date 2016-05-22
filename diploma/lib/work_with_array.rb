@@ -13,6 +13,7 @@ class WorkWithArray
 	def header
 		array_from_sheet.each do |elem|
 			elem[0].class == String ? @array_head << elem : break
+			#array_from_sheet.shift
 		end
 		(array_head.size).times {|i| array_from_sheet.shift}
 		array_head
