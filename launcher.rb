@@ -1,10 +1,8 @@
 require 'gtk3'
 sep = File::SEPARATOR
-Dir[File.dirname(__FILE__)+ "#{sep}" + "diploma" + "#{sep}" + "lib" + "#{sep}" + "*.rb"].each {|file| require "#{file}"}
-
+Dir[File.dirname(__FILE__)+ "#{sep}" + 'diploma' + "#{sep}" + 'lib' + "#{sep}" + '*.rb'].each { |file| require "#{file}" }
 
 class RubyApp < Gtk::Window
-
   attr_accessor :hash_with_data, :array, :array_cub, :array_hyp, :array_cub_with_extremes
 
   def initialize
@@ -19,15 +17,14 @@ class RubyApp < Gtk::Window
     init_ui
   end
 
-
   def init_ui
 
     table = Gtk::Table.new 2, 2, true
 
-    open = Gtk::Button.new :label => '1.Read'
-    plot = Gtk::Button.new :label => '2.Plotting'
-    save = Gtk::Button.new :label => '3.Save file'
-    quit = Gtk::Button.new :label => 'Quit'
+    open = Gtk::Button.new label: '1.Read'
+    plot = Gtk::Button.new label: '2.Plotting'
+    save = Gtk::Button.new label: '3.Save file'
+    quit = Gtk::Button.new label: 'Quit'
 
     open.signal_connect 'clicked' do
       on_open
@@ -74,11 +71,10 @@ class RubyApp < Gtk::Window
 
     if dialog.run == :accept
 
-      #dialog.run == (:cancel || :destroy) ? dialog.destroy : condition(dialog, 'Error associated with opening a file: wrong format file')
       condition(dialog, 'Error associated with opening a file: wrong format file')
 
       begin
-        ReadFromExcelFile.new(dialog.filename).open_sheet.each{|row| @array<<row}
+        ReadFromExcelFile.new(dialog.filename).open_sheet.each { |row| @array << row }
 
         solid = WorkWithArray.new(array)
         hash_with_data[:head_data] = solid.header
@@ -107,12 +103,12 @@ class RubyApp < Gtk::Window
     box1.pack_start(box2, expand: true, fill: true, padding: 0)
 
     scrolled_win = Gtk::ScrolledWindow.new
-    scrolled_win.set_policy(:automatic,:automatic)
+    scrolled_win.set_policy(:automatic, :automatic)
     box2.pack_start(scrolled_win, expand: true, fill: true, padding: 0)
 
     model = Gtk::ListStore.new(String)
     column = Gtk::TreeViewColumn.new('Select Gene',
-                                     Gtk::CellRendererText.new, {text: 0})
+                                     Gtk::CellRendererText.new, { text: 0 })
     treeview = Gtk::TreeView.new(model)
     treeview.append_column(column)
     treeview.selection.set_mode(:single)
@@ -121,18 +117,18 @@ class RubyApp < Gtk::Window
     hash_with_data[:head_data].last.each do |v|
       if v[/CG/]
         iter = model.append
-        iter[0] =  v
+        iter[0] = v
       end
     end
 
     button_hyp = Gtk::Button.new label: 'Plot hyperbola'
-    button_hyp.can_focus=true
+    button_hyp.can_focus = true
 
     button_cub = Gtk::Button.new label: 'Plot cubic parabola'
-    button_cub.can_focus=true
+    button_cub.can_focus = true
 
     button_cub_with_extremes = Gtk::Button.new label: "Plot cubic parabola\n with extreme points"
-    button_cub_with_extremes.can_focus=true
+    button_cub_with_extremes.can_focus = true
 
     button_hyp.signal_connect 'clicked' do
       iter = treeview.selection.selected
@@ -165,7 +161,7 @@ class RubyApp < Gtk::Window
     box1.pack_start(separator, expand: false, fill: true, padding: 0)
     separator.show
 
-    button = Gtk::Button.new :label => 'Back'
+    button = Gtk::Button.new label: 'Back'
     button.signal_connect 'clicked' do
       window.destroy
     end
@@ -187,7 +183,6 @@ class RubyApp < Gtk::Window
 
     if save.run == :accept
 
-      #save.run == (:cancel || :destroy) ? save.destroy : condition(save, 'Error associated with saving a file')
       condition(save, 'Error associated with saving a file')
 
       RecordToFile.new(save.filename, hash_with_data[:head_data].first,
@@ -218,7 +213,7 @@ class RubyApp < Gtk::Window
 
   private
 
-  def condition (obj, mess)
+  def condition(obj, mess)
     until obj.filename[/.xls[x]?$/] =~ /.xls[x]?$/
       on_error mess
       obj.run
@@ -253,7 +248,6 @@ class RubyApp < Gtk::Window
     @array_cub_with_extremes << [gene] + plot.y
     @array_cub_with_extremes.uniq!
   end
-
 end
 
 RubyApp.new

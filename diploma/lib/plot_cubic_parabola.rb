@@ -3,7 +3,6 @@ require_relative 'mnk_cubic_parabola'
 require_relative 'sum_approximation_module'
 
 class PlotCP
-
   include SumApproximation
 
   attr_accessor :x, :y
@@ -12,16 +11,17 @@ class PlotCP
   def initialize(obn, gene_id)
     @ob = obn
     @gn = gene_id
-    @x, @y = [], []
+    @x = []
+    @y = []
   end
 
   def plotting_equation
     Gnuplot.open do |gp|
-      Gnuplot::Plot.new( gp ) do |plot|
+      Gnuplot::Plot.new(gp) do |plot|
 
-        plot.title  "Cubic parabola"
+        plot.title  'Cubic parabola'
         plot.ylabel "#{gn}"
-        plot.xlabel "Calibration ID"
+        plot.xlabel 'Calibration ID'
 
         @x = ob.x.collect { |v| v.to_f }
         @y = x.collect do |v|
@@ -29,23 +29,19 @@ class PlotCP
         end
 
         plot.data = [
-                    Gnuplot::DataSet.new( [x, ob.y] ) do |ds|
-                      ds.with = "points"
-                      ds.title = "Data"
-                      ds.linewidth = 2
+                    Gnuplot::DataSet.new([x, ob.y]) do |ds|
+                    ds.with = 'points'
+                    ds.title = 'Data'
+                    ds.linewidth = 2
                     end,
 
-                    Gnuplot::DataSet.new( [x, y] ) do |ds|
-                      ds.with = "linespoints"
-                      ds.title = "Approximation data"
+                    Gnuplot::DataSet.new([x, y]) do |ds|
+                    ds.with = 'linespoints'
+                    ds.title = 'Approximation data'
                     end,
 
-                    mistake_written_in_title
-                    ]
+                    mistake_written_in_title]
       end
     end
   end
-
-
-
 end
